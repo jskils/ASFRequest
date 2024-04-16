@@ -2,19 +2,19 @@
 	<Import Project="ArchiSteamFarm/Directory.Build.props" />
 
 	<PropertyGroup>
-		<PluginName>MyAwesomePlugin</PluginName>
+		<PluginName>ASFRequest</PluginName>
 		<Version>1.0.0.0</Version>
 	</PropertyGroup>
 
 	<PropertyGroup>
 		<ApplicationIcon />
-		<Authors>YourName</Authors>
+		<Authors>kils</Authors>
 		<Company>$(Authors)</Company>
 		<Copyright>Copyright © $([System.DateTime]::UtcNow.Year) $(Company)</Copyright>
 		<Description>$(PluginName) description.</Description>
 		<PackageIcon />
 		<PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
-		<PackageProjectUrl>https://github.com/$(Company)/$(PluginName)</PackageProjectUrl>
+		<PackageProjectUrl>https://github.com/jskils/$(PluginName)</PackageProjectUrl>
 		<PackageReleaseNotes>$(PackageProjectUrl)/releases</PackageReleaseNotes>
 		<RepositoryUrl>$(PackageProjectUrl).git</RepositoryUrl>
 	</PropertyGroup>
