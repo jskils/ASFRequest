@@ -37,7 +37,7 @@ ASFRequest 是为[ArchiSteamFarm](https://github.com/JustArchiNET/ArchiSteamFarm
 
 ---
 
-## 使用示例
+## 使用示例 (以CURL为例)
 
 1. 获取游戏[PUBG: BATTLEGROUNDS](https://store.steampowered.com/app/578080/PUBG_BATTLEGROUNDS/) 的评测情况。
 
@@ -62,12 +62,12 @@ ASFRequest 是为[ArchiSteamFarm](https://github.com/JustArchiNET/ArchiSteamFarm
 	```
 	{
 	  "Result": {
-		"zrtym39598": {
+		"robotName1": {
 		  "Result": "最近评测：褒贬不一(19,583)- 过去 30 天内的 19,583 篇用户评测中有 69% 为好评。全部评测:褒贬不一(2,342,656)- 此游戏的 2,342,656 篇用户评测中有 58% 为好评。",
 		  "Message": "OK",
 		  "Success": true
 		},
-		"zruks05235": {
+		"robotName2": {
 		  "Result": "最近评测：褒贬不一(19,583)- 过去 30 天内的 19,583 篇用户评测中有 69% 为好评。全部评测:褒贬不一(2,342,656)- 此游戏的 2,342,656 篇用户评测中有 58% 为好评。",
 		  "Message": "OK",
 		  "Success": true
@@ -92,17 +92,17 @@ ASFRequest 是为[ArchiSteamFarm](https://github.com/JustArchiNET/ArchiSteamFarm
 	  "WithSession": true,
 	  "Referer": "https://store.steampowered.com",
 	  "BodyData": {
-		"appid": "2351560"
+		"appid": "578080"
 	  }
 	}'
 	```
 
 	返回内容：
-	
+
 	```
 	{
 	  "Result": {
-		"zrtym39598": {
+		"robotName1": {
 		  "Result": {
 			"success": true,
 			"wishlistCount": 10
@@ -110,7 +110,7 @@ ASFRequest 是为[ArchiSteamFarm](https://github.com/JustArchiNET/ArchiSteamFarm
 		  "Message": "OK",
 		  "Success": true
 		},
-		"zruks05235": {
+		"robotName2": {
 		  "Result": {
 			"success": true,
 			"wishlistCount": 7
