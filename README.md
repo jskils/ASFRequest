@@ -27,13 +27,13 @@ ASFRequest 是为[ArchiSteamFarm](https://github.com/JustArchiNET/ArchiSteamFarm
 
 	swagger接口文档地址：http://{host}:{port}/swagger
 
-| 接口                                    | 类型     | 参数                                               | 备注           |
-|---------------------------------------|--------|--------------------------------------------------|--------------|
-| `/Api/ASFRequest/GetState/{botNames}` | `POST` | `Url,WithSession,Referer,Headers`                | GET请求返回状态    |
-| `/Api/ASFRequest/GetHtml/{botNames}`  | `POST` | `Url,WithSession,Referer,Headers,Xpath`          | GET请求返回Html  |
-| `/Api/ASFRequest/GetJson/{botNames}`  | `POST` | `Url,WithSession,Referer,Headers`                | GET请求返回Json  |
-| `/Api/ASFRequest/PostHtml/{botNames}` | `POST` | `Url,WithSession,Referer,Headers,Xpath,BodyData` | POST请求返回Html |
-| `/Api/ASFRequest/PostHtml/{botNames}` | `POST` | `Url,WithSession,Referer,Headers,BodyData`       | POST请求返回Json |
+| 接口                                    | 类型     | 参数                                                                                              | 备注           |
+|---------------------------------------|--------|-------------------------------------------------------------------------------------------------|--------------|
+| `/Api/ASFRequest/GetState/{botNames}` | `POST` | Url: 请求链接<br/>WithSession: 登录状态<br/>Referer: Referer来源<br/>Headers: 自定义请求头                      | GET请求返回状态    |
+| `/Api/ASFRequest/GetHtml/{botNames}`  | `POST` | Url: 请求链接<br/>WithSession: 登录状态<br/>Referer: Referer来源<br/>Headers: 自定义请求头<br/>Xpath: Xpath过滤   | GET请求返回Html  |
+| `/Api/ASFRequest/GetJson/{botNames}`  | `POST` | Url: 请求链接<br/>WithSession: 登录状态<br/>Referer: Referer来源<br/>Headers: 自定义请求头                      | GET请求返回Json  |
+| `/Api/ASFRequest/PostHtml/{botNames}` | `POST` | Url: 请求链接<br/>WithSession: 登录状态<br/>Referer: Referer来源<br/>Headers: 自定义请求头<br/>Xpath: Xpath过滤   | POST请求返回Html |
+| `/Api/ASFRequest/PostHtml/{botNames}` | `POST` | Url: 请求链接<br/>WithSession: 登录状态<br/>Referer: Referer来源<br/>Headers: 自定义请求头<br/>BodyData: json参数 | POST请求返回Json |
 
 ---
 
