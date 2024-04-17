@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
-namespace ASFRequest;
+namespace ASFRequest.Request;
 
 /// <summary>
 /// 请求参数
