@@ -6,10 +6,15 @@ using System.Net;
 using System.Text.Json.Nodes;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Core;
+using ArchiSteamFarm.Helpers;
+using ArchiSteamFarm.Helpers.Json;
 using ArchiSteamFarm.IPC.Controllers.Api;
 using ArchiSteamFarm.IPC.Responses;
 using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.Steam;
+using ArchiSteamFarm.Steam.Security;
+using ArchiSteamFarm.Steam.Storage;
+using ASFRequest.Helper;
 using ASFRequest.Request;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
@@ -23,6 +28,58 @@ namespace ASFRequest.Controller;
 [Route("/Api/ASFRequest/[action]", Name = nameof(ASFRequest))]
 [SwaggerTag(nameof(ASFRequest))]
 public sealed class RequestController : ArchiController {
+	/// <summary>
+	/// 批量新增机器人
+	/// </summary>
+	/// <param name="requests"></param>
+	/// <returns></returns>
+	/// <exception cref="ArgumentNullException"></exception>
+	[HttpPost]
+	[SwaggerOperation(Summary = "批量新增机器人", Description = "批量新增机器人")]
+	[ProducesResponseType(typeof(GenericResponse<IReadOnlyDictionary<string, GenericResponse<HttpStatusCode>>>), (int) HttpStatusCode.OK)]
+	[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.BadRequest)]
+	public async Task<ActionResult<GenericResponse>> AddBot([FromBody] IReadOnlyCollection<AddBotRequest>? requests) {
+		if ((requests == null) || (requests.Count == 0)) {
+			return BadRequest(new GenericResponse(false, "配置不能为空"));
+		}
+
+		Dictionary<string, bool> result = new(requests.Count);
+
+		foreach (AddBotRequest request in requests) {
+			string botName = request.BotName;
+			JsonObject? botConfig = request.BotConfig;
+			JsonObject? maFile = request.MaFile;
+			bool success = false;
+
+			if (string.IsNullOrEmpty(botName) || (botConfig == null)) {
+				result[botName] = success;
+
+				continue;
+			}
+
+			string configFilePath = Bot.GetFilePath(botName, Bot.EFileType.Config);
+			string configJson = botConfig.ToJsonText(true);
+			success = await FileHelper.Write(configFilePath, configJson).ConfigureAwait(false);
+
+			if (!success) {
+				result[botName] = success;
+
+				continue;
+			}
+
+			if (maFile != null) {
+				string maFilePath = Bot.GetFilePath(botName, Bot.EFileType.MobileAuthenticator);
+				string maJson = maFile.ToJsonText(true);
+				bool maFileSuccess = await FileHelper.Write(maFilePath, maJson).ConfigureAwait(false);
+				success = maFileSuccess;
+			}
+
+			result[botName] = success;
+		}
+
+		return Ok(new GenericResponse<IReadOnlyDictionary<string, bool>>(result));
+	}
+
 	/// <summary>
 	/// GET请求返回状态
 	/// </summary>
