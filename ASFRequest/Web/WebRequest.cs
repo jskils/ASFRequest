@@ -64,7 +64,7 @@ internal static class WebRequest {
 
 		INode? selectNode = document.SelectSingleNode(param.Xpath);
 
-		return new GenericResponse<string?>(selectNode?.Text());
+		return new GenericResponse<string?>(selectNode?.ToHtml());
 	}
 
 	internal static async Task<GenericResponse<JsonObject?>?> GetJson(Bot bot, BaseRequest param) {
@@ -108,7 +108,7 @@ internal static class WebRequest {
 
 		INode? selectNode = document.SelectSingleNode(param.Xpath);
 
-		return new GenericResponse<string?>(selectNode?.Text());
+		return new GenericResponse<string?>(selectNode?.ToHtml());
 	}
 
 	internal static async Task<GenericResponse<JsonObject?>?> PostJson(Bot bot, PostRequest param) {
