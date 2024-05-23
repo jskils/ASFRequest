@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Text.Json.Nodes;
 using System.Threading.Tasks;
 using AngleSharp;
 using AngleSharp.Dom;
 using ArchiSteamFarm.Core;
-using ArchiSteamFarm.Helpers.Json;
 using ArchiSteamFarm.IPC.Responses;
 using ArchiSteamFarm.Steam;
 using ArchiSteamFarm.Steam.Integration;
@@ -129,13 +127,14 @@ internal static class WebRequest {
 	}
 
 	private static Dictionary<string, string> MergeHeaders(Dictionary<string, string>? headers) {
-		if (headers is not { Count: > 0 }) {
-			return UserAgentHeader;
+		Dictionary<string, string> mergedHeaders = new(UserAgentHeader);
+
+		if (headers is { Count: > 0 }) {
+			foreach (KeyValuePair<string, string> kvp in headers) {
+				mergedHeaders[kvp.Key] = kvp.Value;
+			}
 		}
 
-		Dictionary<string, string> mergeHeaders = UserAgentHeader;
-		headers.ToList().ForEach(kvp => mergeHeaders[kvp.Key] = kvp.Value);
-
-		return mergeHeaders;
+		return mergedHeaders;
 	}
 }
