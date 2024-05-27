@@ -81,6 +81,42 @@ public sealed class RequestController : ArchiController {
 	}
 
 	/// <summary>
+	/// 获取机器人更多信息
+	/// </summary>
+	/// <param name="botNames"></param>
+	/// <returns></returns>
+	/// <exception cref="ArgumentNullException"></exception>
+	[HttpGet("{botNames:required}")]
+	[SwaggerOperation(Summary = "获取机器人更多信息", Description = "获取机器人更多信息")]
+	[ProducesResponseType(typeof(GenericResponse<IReadOnlyDictionary<string, GenericResponse<IReadOnlyDictionary<string, object>>?>>), (int) HttpStatusCode.OK)]
+	[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.BadRequest)]
+	public ActionResult<GenericResponse> Info(string botNames) {
+		if (string.IsNullOrEmpty(botNames)) {
+			throw new ArgumentNullException(nameof(botNames));
+		}
+
+		HashSet<Bot>? bots = Bot.GetBots(botNames);
+
+		if ((bots == null) || (bots.Count == 0)) {
+			return BadRequest(new GenericResponse(false, string.Format(CultureInfo.CurrentCulture, Strings.BotNotFound, botNames)));
+		}
+
+		return Ok(
+			new GenericResponse<Dictionary<string, Dictionary<string, object>>>(
+				bots.Where(static bot => !string.IsNullOrEmpty(bot.BotName))
+					.ToDictionary(
+						static bot => bot.BotName, static bot => new Dictionary<string, object> {
+							{ nameof(bot.IsConnectedAndLoggedOn), bot.IsConnectedAndLoggedOn },
+							{ nameof(bot.IsAccountLimited), bot.IsAccountLimited },
+							{ nameof(bot.IsAccountLocked), bot.IsAccountLocked },
+							{ nameof(bot.HasMobileAuthenticator), bot.HasMobileAuthenticator }
+						}
+					)
+			)
+		);
+	}
+
+	/// <summary>
 	/// GET请求返回状态
 	/// </summary>
 	/// <param name="botNames"></param>
