@@ -117,7 +117,7 @@ public sealed class RequestController : ArchiController {
 	}
 
 	/// <summary>
-	/// GET请求返回状态
+	/// 通用GET请求返回状态
 	/// </summary>
 	/// <param name="botNames"></param>
 	/// <param name="requestParam"></param>
@@ -158,7 +158,7 @@ public sealed class RequestController : ArchiController {
 	}
 
 	/// <summary>
-	/// GET请求返回Html
+	/// 通用GET请求返回Html
 	/// </summary>
 	/// <param name="botNames"></param>
 	/// <param name="requestParam"></param>
@@ -199,7 +199,7 @@ public sealed class RequestController : ArchiController {
 	}
 
 	/// <summary>
-	/// GET请求返回Json
+	/// 通用GET请求返回Json
 	/// </summary>
 	/// <param name="botNames"></param>
 	/// <param name="requestParam"></param>
@@ -240,7 +240,7 @@ public sealed class RequestController : ArchiController {
 	}
 
 	/// <summary>
-	/// POST请求返回Html
+	/// 通用POST请求返回Html
 	/// </summary>
 	/// <param name="botNames"></param>
 	/// <param name="requestParam"></param>
@@ -281,7 +281,7 @@ public sealed class RequestController : ArchiController {
 	}
 
 	/// <summary>
-	/// POST请求返回Json
+	/// 通用POST请求返回Json
 	/// </summary>
 	/// <param name="botNames"></param>
 	/// <param name="requestParam"></param>
@@ -319,5 +319,46 @@ public sealed class RequestController : ArchiController {
 		Dictionary<string, GenericResponse<JsonObject?>?> response = results.ToDictionary(static x => x.BotName, static x => x.Data);
 
 		return Ok(new GenericResponse<IReadOnlyDictionary<string, GenericResponse<JsonObject?>?>>(response));
+	}
+
+	/// <summary>
+	/// SteamApi调用
+	/// </summary>
+	/// <param name="botNames"></param>
+	/// <param name="requestParam"></param>
+	/// <returns></returns>
+	/// <exception cref="ArgumentNullException"></exception>
+	[HttpPost("{botNames:required}")]
+	[SwaggerOperation(Summary = "SteamApi调用", Description = "SteamApi调用")]
+	[ProducesResponseType(typeof(GenericResponse<IReadOnlyDictionary<string, GenericResponse<string?>>>), (int) HttpStatusCode.OK)]
+	[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.BadRequest)]
+	public async Task<ActionResult<GenericResponse>> SteamApi(string botNames, [FromBody] SteamApiRequest requestParam) {
+		if (string.IsNullOrEmpty(botNames)) {
+			throw new ArgumentNullException(nameof(botNames));
+		}
+
+		HashSet<Bot>? bots = Bot.GetBots(botNames);
+
+		if ((bots == null) || (bots.Count == 0)) {
+			return BadRequest(new GenericResponse(false, string.Format(CultureInfo.CurrentCulture, Strings.BotNotFound, botNames)));
+		}
+
+		IList<(string BotName, GenericResponse<string?>? Data)> results = await Utilities.InParallel(
+			bots.Select(
+				async bot => {
+					if (!bot.IsConnectedAndLoggedOn) {
+						return (bot.BotName, new GenericResponse<string?>(false, string.Format(CultureInfo.CurrentCulture, Strings.BotDisconnected, bot.BotName), ""));
+					}
+
+					GenericResponse<string?>? result = await WebRequest.SteamApi(bot, requestParam).ConfigureAwait(false);
+
+					return (bot.BotName, result);
+				}
+			)
+		).ConfigureAwait(false);
+
+		Dictionary<string, GenericResponse<string?>?> response = results.ToDictionary(static x => x.BotName, static x => x.Data);
+
+		return Ok(new GenericResponse<IReadOnlyDictionary<string, GenericResponse<string?>?>>(response));
 	}
 }
